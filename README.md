@@ -21,11 +21,11 @@ Provide steps like:
 
 ### **GitHub Repository Link**
 
-(Add your GitHub repo link here)
+([ GitHub repo link here](https://github.com/AmanMunshi032/B6-Assignment-2))
 
 ### **Live Deployment Link**
 
-(Add your live deployed API URL here)
+([ Live deployed API URL here](https://assignment-2-self-kappa.vercel.app/))
 
 ---
 ## 🎯 Project Overview
