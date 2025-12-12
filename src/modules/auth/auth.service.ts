@@ -7,7 +7,7 @@ import config from "../../config";
 const signupuser = async (payload:Record<string, unknown>)=>{
    const {name,email,password,phone,role}=payload;
     const haspassword = await bcrypt.hash(password as string ,10)
-    const result = await pool.query(`INSERT INTO users (name,email,password,phone,role)VALUES($1,$2,$3,$4,$5) RETURNING *`,[name,email,haspassword,phone,role]);
+    const result = await pool.query(`INSERT INTO users (name,email,password,phone,role)VALUES($1,$2,$3,$4,$5) RETURNING id, name, email, phone, role`,[name,email,haspassword,phone,role]);
     return result
 }
 
@@ -19,12 +19,9 @@ const Loginauthuser = async (email:string,password:string) => {
     return null; // user not found
   }
   const user = result.rows[0];
-
-  // check password
+  
   const match = await bcrypt.compare(password,user.password);
-
-  console.log({ match, user });
-
+ 
   if (!match) {
     return false; // wrong password
   }
@@ -33,13 +30,13 @@ const Loginauthuser = async (email:string,password:string) => {
     expiresIn:"7d"
     
   })
-console.log({token})
+ delete user.password;
   // MUST return user on success!
   return {token,user};
 };
 
 
-
+ 
 export const authservice = {
    signupuser,
   Loginauthuser

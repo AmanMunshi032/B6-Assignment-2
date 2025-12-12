@@ -22,7 +22,7 @@ const updateuser = async (req:Request, res:Response) => {
   try {
     const result = await userServices.updateuser(req.body,req.params.userId as string);
 
-    if (result.rows.length === 0) {
+    if (result.rowCount === 0) {
       res.status(404).json({
         success: false,
         message: "User not found",
@@ -31,7 +31,7 @@ const updateuser = async (req:Request, res:Response) => {
       res.status(200).json({
         success: true,
         message: "User updated successfully",
-        data: result.rows[0],
+        data: result.rows,
       });
     }
   } catch (err: any) {
@@ -45,16 +45,17 @@ const updateuser = async (req:Request, res:Response) => {
 const deleteuser = async (req:Request, res:Response) => {
   try {
   
-    const result = await userServices.deleteuser(req.params.userId as string);
+  const result = await userServices.deleteuser(req.params.userId as unknown as number);
 
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "user not found" });
+    if (!result.success) {
+      res.status(404).json(result);
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "User deleted successfully",
+       
+      });
     }
-
-    return res.json({
-      success: true,
-      message: "user deleted successfully",
-    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({

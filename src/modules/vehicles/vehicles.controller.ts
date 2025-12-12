@@ -84,24 +84,38 @@ const updatevehicles = async (req:Request, res:Response) => {
     });
   }
 };
-
- const deletevehicles = async (req:Request, res:Response) => {
+const deletevehicles = async (req: Request, res: Response) => {
   try {
-  
-    const result = await vehiclesservice.deletevehicles(req.params.vehicleId as string);
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Vehicle not found" });
+    const vehicleId = Number(req.params.vehicleId );
+    const role = req.user?.role;
+    if (isNaN(vehicleId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid vehicle ID",
+      });
     }
 
-    return res.json({
-      success: true,
-      message: "Vehicle deleted successfully",
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      error: "Failed to delete vehicle",
+    // Check admin role
+    if (role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Only admin can delete vehicles",
+      });
+    }
+
+    const result = await vehiclesservice.deletevehicles(vehicleId);
+    if ( !result.success ) {
+      res.status(404).json(result);
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Vehicle deleted successfully",
+      });
+    }
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };

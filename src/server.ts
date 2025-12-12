@@ -21,7 +21,7 @@ app.use("/api/v1/vehicles",vehiclesrouter)
 //user router
 app.use("/api/v1/users",userRouter)
 //booking router
-app.use("/v1/bookings",bookingRouter)
+app.use("/api/v1/bookings",bookingRouter)
 
 //initilazing DB
  initDB()
